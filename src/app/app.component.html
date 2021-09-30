@@ -1,0 +1,14 @@
+<!-- nav -->
+<nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="user">
+    <div class="navbar-nav">
+        <a class="nav-item nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">მთავარი გვერდი</a>
+        <a class="nav-item nav-link" routerLink="/users" routerLinkActive="active">მომხმარებლები</a>
+        <a class="nav-item nav-link" style= "cursor:pointer" routerLinkActive="active"(click)="logout()">გასვლა</a>
+    </div>
+</nav>
+
+<!-- main app container -->
+<div class="app-container" [ngClass]="{ 'bg-light': user }">
+    <alert></alert>
+    <router-outlet></router-outlet>
+</div>
