@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { AlertComponent } from './_components';
 import { HomeComponent } from './home';
 import {AccountModule} from "@app/account/account.module";
+import { OrdersComponent } from './orders/orders.component';
 
 @NgModule({
     imports: [
@@ -24,7 +25,8 @@ import {AccountModule} from "@app/account/account.module";
     declarations: [
         AppComponent,
         AlertComponent,
-        HomeComponent
+        HomeComponent,
+        OrdersComponent
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
