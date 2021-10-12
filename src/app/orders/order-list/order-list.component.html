@@ -1,0 +1,75 @@
+<div class="container">
+    <h1>Orders</h1>
+    <a (click)="open(content)" class="btn btn-sm btn-success mb-2">Add order</a>
+
+    <table class="table table-striped">
+
+
+        <thead>
+            <tr>
+                <th style="width: 25%">name</th>
+                <th style="width: 25%">color</th>
+                <th style="width: 25%">material</th>
+                <th style="width: 25%">size</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let order of orders">
+                <td>{{order.name}}</td>
+                <td>{{order.color}}</td>
+                <td>{{order.material}}</td>
+                <td>{{order.size}}</td>
+                <td style="white-space: nowrap">
+                <button (click)="deleteOrder(order.id)" class="btn btn-sm btn-danger btn-delete-user" [disabled]="order.isDeleting">
+                    <span *ngIf="order.isDeleting" class="spinner-border spinner-border-sm"></span>
+                    <span *ngIf="!order.isDeleting">Delete</span>
+                </button>
+            </td>
+            </tr>
+            <tr *ngIf="!orders">
+                <td colspan="4" class="text-center">
+                    <span class="spinner-border spinner-border-lg align-center"></span>
+                </td>
+            </tr>
+        </tbody>
+
+
+
+        <ng-template #content let-modal>
+            <div class="modal-header">
+                <h1 *ngIf="isAddMode">Add product</h1>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label for="firstName">Name</label>
+                            <input type="text" formControlName="name" class="form-control" />
+                        </div>
+                        <div class="form-group col">
+                            <label for="firstName">color</label>
+                            <input type="text" formControlName="color" class="form-control" />
+                        </div>
+                        <div class="form-group col">
+                            <label for="firstName">material</label>
+                            <input type="text" formControlName="material" class="form-control" />
+                        </div>
+                        <div class="form-group col">
+                            <label for="firstName">size</label>
+                            <input type="text" formControlName="size" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button  [disabled]="loading" class="btn btn-primary">
+                            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                            Save
+                        </button>
+                        <a class="close" (click)="modal.close('Close click')" class="btn btn-link">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </ng-template>
+
+
+    </table>
+</div>

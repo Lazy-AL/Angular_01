@@ -7,6 +7,12 @@ import { Role } from '@app/_models';
 
 // array in local storage for registered users
 const usersKey = 'users';
+const ordersKey = 'orders';
+
+let orders = [
+    { id: 1, name: 'shirt ', color: 'red', material: 'cotton', size: 'xxl' }
+]
+
 let users = [
     { id: 1, username: 'admin', password: 'admin', firstName: 'Admin', lastName: 'User', role: Role.Admin },
     { id: 2, username: 'user', password: 'user', firstName: 'Normal', lastName: 'User', role: Role.User },
@@ -18,7 +24,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const { url, method, headers, body } = request;
 
-        return handleRoute();        
+        return handleRoute();
 
         function handleRoute() {
             switch (true) {
@@ -28,6 +34,19 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     return register();
                 case url.endsWith('/users') && method === 'GET':
                     return getUsers();
+                //orders ----------------------------
+                case url.endsWith('/orders') && method === 'GET':
+                    return getOrders();
+
+                case url.endsWith('/orders') && method === 'POST':
+                    return registerOrder();
+
+                case url.match(/\/orders\/\d+$/) && method === 'PUT':
+                    return updateOrder();
+
+                case url.match('/orders') && method === 'DELETE':
+                    return deleteOrder();
+                //orders end ------------------------------
                 case url.match(/\/users\/\d+$/) && method === 'GET':
                     return getUserById();
                 case url.match(/\/users\/\d+$/) && method === 'PUT':
@@ -35,14 +54,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 case url.match(/\/users\/\d+$/) && method === 'DELETE':
                     return deleteUser();
                 default:
-                   
+
                     return next.handle(request);
             }
 
         }
 
-        // route functions
-
+        // route functions users
         function authenticate() {
             const { username, password } = body;
             const user = users.find(x => x.username === username && x.password === password);
@@ -58,7 +76,6 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             });
         }
 
-
         function register() {
             const user = body
 
@@ -72,7 +89,18 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             return ok(user);
         }
 
-         function updateUser() {
+        function registerOrder() {
+            const order = body
+
+            if (orders.find(x => x.name === order.name)) {
+                return error('name"' + order.name + '" is already taken')
+            }
+            orders.push(order);
+            localStorage.setItem(ordersKey, JSON.stringify(orders));
+            return ok(order);
+        }
+
+        function updateUser() {
             if (!isLoggedIn()) return unauthorized();
 
             let params = body;
@@ -82,12 +110,25 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             if (!params.password) {
                 delete params.password;
             }
-
             // update and save user
             Object.assign(user, params);
             localStorage.setItem(usersKey, JSON.stringify(users));
-
             return ok(user);
+        }
+        function updateOrder() {
+            if (!isLoggedIn()) return unauthorized();
+
+            let params = body;
+            let order = orders.find(x => x.id === idFromUrl());
+
+            // only update password if entered
+            if (!params.password) {
+                delete params.password;
+            }
+            // update and save user
+            Object.assign(order, params);
+            localStorage.setItem(ordersKey, JSON.stringify(orders));
+            return ok(order);
         }
 
         function deleteUser() {
@@ -98,9 +139,22 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             return ok(users);
         }
 
+
+        function deleteOrder() {
+
+            orders = orders.filter(x => x.id !== idFromUrl());
+            localStorage.setItem(ordersKey, JSON.stringify(orders));
+            return ok(orders);
+        }
+
         function getUsers() {
             // if (!isAdmin()) return unauthorized();
             return ok(users);
+        }
+
+        // route functions orders
+        function getOrders() {
+            return ok(orders);
         }
 
         function getUserById() {
@@ -108,7 +162,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
             /** 
              * !only admins can access other user records
-             * */ 
+             * */
             if (!isAdmin() && currentUser().id !== idFromUrl()) return unauthorized();
 
             const user = users.find(x => x.id === idFromUrl());
@@ -117,7 +171,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         // helper functions
 
-        
+
         function ok(body) {
             return of(new HttpResponse({ status: 200, body }))
                 .pipe(delay(500)); // delay observable to simulate server api call

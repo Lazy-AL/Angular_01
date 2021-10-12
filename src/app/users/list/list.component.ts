@@ -4,6 +4,8 @@ import { first } from 'rxjs/operators';
 import { AccountService } from '../../_services/acount.service';
 
 @Component({ templateUrl: 'list.component.html'})
+
+
 export class ListComponent implements OnInit {
     users = null;
 

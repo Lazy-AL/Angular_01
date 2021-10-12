@@ -12,7 +12,7 @@ import { AddEditComponent } from '././add/add-edit.component';
         CommonModule,
         ReactiveFormsModule,
         UsersRoutingModule,
-        FormsModule
+        FormsModule,
     ],
     declarations: [
         LayoutComponent,
