@@ -1,5 +1,5 @@
 export class Order {
-    id?: string;
+    id?: number;
     name?: string;
     color?: string;
     material?: string;

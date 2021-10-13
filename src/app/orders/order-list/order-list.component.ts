@@ -6,7 +6,7 @@ import { AccountService } from '@app/_services/acount.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from '../../_services/alert.service';
-
+import { Order } from '@app/_models/order';
 
 @Component({
   selector: 'app-order-list',
@@ -15,7 +15,7 @@ import { AlertService } from '../../_services/alert.service';
 })
 
 export class OrderListComponent implements OnInit {
-  orders = null;
+  orders:Order[] = null;
   closeResult!: string;
   form: FormGroup;
   id: string;
@@ -36,13 +36,13 @@ export class OrderListComponent implements OnInit {
   ngOnInit() {
     this.id = this.route.snapshot.params['id'];
     this.isAddMode = !this.id;
-
+    this.orders = JSON.parse(localStorage.getItem('orders'));
+    console.log(this.orders,'this.orders')
     const passwordValidators = [Validators.minLength(6)];
     if (this.isAddMode) {
       passwordValidators.push(Validators.required);
   }
     this.accountService.getAllOrder()
-      .pipe(first())
       .subscribe(orders => this.orders = orders)
 
     this.form = this.formBuilder.group({
@@ -54,7 +54,7 @@ export class OrderListComponent implements OnInit {
     });
     if (!this.isAddMode) {
       this.accountService.getByOrderId(this.id)
-          .pipe(first())
+          // .pipe(first())
           .subscribe(x => this.form.patchValue(x));
   }
 
@@ -92,9 +92,9 @@ export class OrderListComponent implements OnInit {
     }
   }
 
-  deleteOrder(id: string) {
+  deleteOrder(id: number) {
     const order = this.orders.find(x => x.id === id);
-    order.isDeleting = true;
+    // order.isDeleting = true;
     this.accountService.deleteOrder(id)
       .pipe(first())
       .subscribe(() => this.orders = this.orders.filter(x => x.id !== id));

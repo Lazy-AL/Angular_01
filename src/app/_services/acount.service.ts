@@ -120,7 +120,7 @@ export class AccountService {
             }));
     }
 
-    deleteOrder(id: string) {
+    deleteOrder(id: number) {
         return this.http.delete(`${environment.apiUrl}/orders/${id}`)
             .pipe(map(x => {
                 // auto logout if the logged in user deleted their own record

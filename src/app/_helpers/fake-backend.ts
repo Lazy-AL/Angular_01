@@ -4,12 +4,13 @@ import { Observable, of, throwError } from 'rxjs';
 import { delay, materialize, dematerialize } from 'rxjs/operators';
 
 import { Role } from '@app/_models';
+import { Order } from '@app/_models/order';
 
 // array in local storage for registered users
 const usersKey = 'users';
 const ordersKey = 'orders';
 
-let orders = [
+let orders : Order[] = [
     { id: 1, name: 'shirt ', color: 'red', material: 'cotton', size: 'xxl' }
 ]
 
@@ -96,6 +97,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 return error('name"' + order.name + '" is already taken')
             }
             orders.push(order);
+            console.log(orders,'dioooo')
             localStorage.setItem(ordersKey, JSON.stringify(orders));
             return ok(order);
         }
@@ -154,6 +156,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         // route functions orders
         function getOrders() {
+            orders = JSON.parse(localStorage.getItem('orders'));
             return ok(orders);
         }
 
