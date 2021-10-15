@@ -117,6 +117,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             localStorage.setItem(usersKey, JSON.stringify(users));
             return ok(user);
         }
+        
         function updateOrder() {
             if (!isLoggedIn()) return unauthorized();
 
@@ -156,8 +157,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         // route functions orders
         function getOrders() {
-            orders = JSON.parse(localStorage.getItem('orders'));
-            return ok(orders);
+                if(orders.length > 0){
+                    orders = JSON.parse(localStorage.getItem('orders'));
+                    return ok(orders);
+                }
+                return ok(orders);
         }
 
         function getUserById() {

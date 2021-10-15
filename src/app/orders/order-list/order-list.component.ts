@@ -15,7 +15,7 @@ import { Order } from '@app/_models/order';
 })
 
 export class OrderListComponent implements OnInit {
-  orders:Order[] = null;
+  orders:Order[] = [];
   closeResult!: string;
   form: FormGroup;
   id: string;
@@ -36,9 +36,11 @@ export class OrderListComponent implements OnInit {
   ngOnInit() {
     this.id = this.route.snapshot.params['id'];
     this.isAddMode = !this.id;
+
     this.orders = JSON.parse(localStorage.getItem('orders'));
-    console.log(this.orders,'this.orders')
+    console.log(this.orders,'this.ordersqqqqq')
     const passwordValidators = [Validators.minLength(6)];
+    
     if (this.isAddMode) {
       passwordValidators.push(Validators.required);
   }
@@ -46,6 +48,7 @@ export class OrderListComponent implements OnInit {
       .subscribe(orders => this.orders = orders)
 
     this.form = this.formBuilder.group({
+      id: ['', Validators.required],
       name: ['', Validators.required],
       material: ['', Validators.required],
       color: ['', Validators.required],

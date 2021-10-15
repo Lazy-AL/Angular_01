@@ -99,7 +99,7 @@ export class AccountService {
                 // update stored user if the logged in user updated their own record
                 if (id == this.orderValue.id) {
                     // update local storage
-                    const order = { ...this.userValue, ...params };
+                    const order = { ...this.orderValue, ...params };
                     localStorage.setItem('order', JSON.stringify(order));
 
                     // publish updated user to subscribers
