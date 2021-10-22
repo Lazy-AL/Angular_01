@@ -96,6 +96,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             if (orders.find(x => x.name === order.name)) {
                 return error('name"' + order.name + '" is already taken')
             }
+            // order.id = orders.length ? Math.max(...orders.map(x => x.id)) + 1 : 1;
             orders.push(order);
             console.log(orders,'dioooo')
             localStorage.setItem(ordersKey, JSON.stringify(orders));
@@ -145,8 +146,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         function deleteOrder() {
 
-            orders = orders.filter(x => x.id !== idFromUrl());
+            orders = orders.filter(x => x.id != idFromUrl());
+            console.log(idFromUrl())
             localStorage.setItem(ordersKey, JSON.stringify(orders));
+            console.log(orders,'deleted')
             return ok(orders);
         }
 

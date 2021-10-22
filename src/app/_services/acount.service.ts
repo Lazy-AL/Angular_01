@@ -126,6 +126,7 @@ export class AccountService {
                 // auto logout if the logged in user deleted their own record
                 
                 return x;
+                
             }));
     }
 }

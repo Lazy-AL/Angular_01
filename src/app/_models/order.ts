@@ -4,4 +4,5 @@ export class Order {
     color?: string;
     material?: string;
     size?: string;
+    user_id?: any
 }

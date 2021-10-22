@@ -15,10 +15,10 @@ import { Order } from '@app/_models/order';
 })
 
 export class OrderListComponent implements OnInit {
-  orders:Order[] = [];
+  orders: Order[] = [];
   closeResult!: string;
   form: FormGroup;
-  id: string;
+  id: any;
   submitted = false;
   users = null;
   isAddMode: any;
@@ -37,15 +37,28 @@ export class OrderListComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
     this.isAddMode = !this.id;
 
+
+
+
+
+
     this.orders = JSON.parse(localStorage.getItem('orders'));
-    console.log(this.orders,'this.ordersqqqqq')
+    console.log(this.orders, 'this.ordersqqqqq')
+
+
+
+
+
+
+
+
     const passwordValidators = [Validators.minLength(6)];
-    
+
     if (this.isAddMode) {
       passwordValidators.push(Validators.required);
-  }
-    this.accountService.getAllOrder()
-      .subscribe(orders => this.orders = orders)
+    }
+
+    this.accountService.getAllOrder().subscribe(orders => this.orders = orders.filter(x => x.user_id === this.accountService.userValue.id))
 
     this.form = this.formBuilder.group({
       id: ['', Validators.required],
@@ -53,18 +66,19 @@ export class OrderListComponent implements OnInit {
       material: ['', Validators.required],
       color: ['', Validators.required],
       size: ['', Validators.required],
-
+      user_id: [this.accountService.userValue.id]
     });
     if (!this.isAddMode) {
       this.accountService.getByOrderId(this.id)
-          // .pipe(first())
-          .subscribe(x => this.form.patchValue(x));
-  }
+        // .pipe(first())
+        .subscribe(x => this.form.patchValue(x));
+    }
 
   }
+
 
   get f() { return this.form.controls; }
-  
+
   open(content: any) {
     this.modalService.open(content, { size: 'lg', ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -80,9 +94,9 @@ export class OrderListComponent implements OnInit {
     this.alertService.clear();
 
     if (this.isAddMode) {
-        this.createOrder();
+      this.createOrder();
     }
-    this.modalService.dismissAll(); 
+    this.modalService.dismissAll();
   }
 
   private getDismissReason(reason: any): string {
@@ -97,6 +111,7 @@ export class OrderListComponent implements OnInit {
 
   deleteOrder(id: number) {
     const order = this.orders.find(x => x.id === id);
+
     // order.isDeleting = true;
     this.accountService.deleteOrder(id)
       .pipe(first())
@@ -111,12 +126,12 @@ export class OrderListComponent implements OnInit {
           this.alertService.success('Order added successfully', { keepAfterRouteChange: false });
         },
         error: error => {
-            this.alertService.error(error);
-            this.loading = false;
+          this.alertService.error(error);
+          this.loading = false;
         }
       });
   }
 
 
-  
+
 }
