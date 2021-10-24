@@ -38,18 +38,8 @@ export class OrderListComponent implements OnInit {
     this.isAddMode = !this.id;
 
 
-
-
-
-
-    this.orders = JSON.parse(localStorage.getItem('orders'));
-    console.log(this.orders, 'this.ordersqqqqq')
-
-
-
-
-
-
+    // this.orders = JSON.parse(localStorage.getItem('orders'));
+    // console.log(this.orders, 'this.ordersqqqqq')
 
 
     const passwordValidators = [Validators.minLength(6)];
@@ -68,6 +58,7 @@ export class OrderListComponent implements OnInit {
       size: ['', Validators.required],
       user_id: [this.accountService.userValue.id]
     });
+    
     if (!this.isAddMode) {
       this.accountService.getByOrderId(this.id)
         // .pipe(first())
